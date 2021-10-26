@@ -1,25 +1,17 @@
 # Passenger Class Classifier Projcet
 > Author: SungwookLE(joker1251@naver.com)  
-<<<<<<< HEAD
 > Date: '21.10/26  
-=======
-> Date: '21.10/21  
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 > DS project
 
 - File tree for repository review
 ```bash
 Project/
 │   README.md
-<<<<<<< HEAD
 │   passenger_classifier_belt.ipynb: This is the Belt Classifier Train&Analysis Pipeline
 │   passenger_classifier_weak.ipynb: This is the weak Classifier Train&Analysis Pipeline
 │   passenger_classifier_oop.ipynb: This is the oop Classifier Train&Analysis Pipeline
 │   passenger_classifier_mask.ipynb: This is the mask Classifier Train&Analysis Pipeline
 |   load_and_test_model.ipynb: This is for load and test(analysis) the trained model
-=======
-│   passenger_classifier.ipynb: This is the Belt Classifier Pipeline
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 │   ...
 │
 └─── load/
@@ -36,7 +28,6 @@ Project/
 │       └── xai_unbelt_sample.png
 │       └── ...
 │
-<<<<<<< HEAD
 └─── ckpt/ (not commited)
     └─── model_belt_cnn: This is the trained model (Belt class)
     └─── model_weak_cnn: This is the trained model (Weak class)
@@ -52,37 +43,13 @@ Data/ (not commited)
 ## 1. Introduction
 - Data: Passenger Class Datasets were collected by myself. And those are for private research. If you want to explore those, contact to [email](joker125@naver.com).
 - Actors in images are Yukhyun(man), Minseok(man), Sungwook(man), Juwon(woman), Sujin(woman), Jieun(Woman).
-=======
-└─── ckpt/
-    └─── model_belt_cnn: This is the trained model (Belt class)
-
-Data/    
-└─── open_dataset/: Those are from the distracted dataset(`DMD dataset`)
-│   │ ...
-└─── safety_class_dataset/: Collecting by myself
-│   │ ...
-└─── safety_class_testset/: Extracted from safety_class_datasets using random collection method
-│   │ ...
- ```    
-
-## 1. Introduction
-- Data/: Passenger Class Datasets were collected by myself. And those are for private research. If you want to explore those, contact to [email](joker125@naver.com).
-- Actors in images are Yukhyun(man), Minseok(man), Sungwook(man), Juwon(woman), Sujin(woman).
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 - Classifier has **4(four)** main tasks.
     1. 취약승객: Man(`s0`) / Woman(`s1`)
     2. 착좌 특이조건(OOP): Far(`c5`) / Close(`c6`) / Behind(`c7`) / Phone(`c1`) / Normal(`c0`)
     3. 벨트 착용 여부: Belt(`b0`) / Unbelt(`b1`)
     4. 마스크 착용 여부: Mask(`m0`) / Nomask(`m1`)
-<<<<<<< HEAD
 - Target Performance: `AUC` > **0.93**
 
-=======
-
-- Target Performance: `AUC` > **0.93**
-
-
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 ## 2. MAIN
 - 본 프로젝트의 분류 모델은 **4개의** main tasks를 가지고 있다. `WEAK/OOP/BELT/MASK`
     - 과제의 목표로 첫번째는 AUC > 0.93 이상의 모델을 만드는 것에 있다
@@ -104,7 +71,6 @@ Data/
     - 아래의 분류 모델에 xAI 분석을 통해 주어진 input 이미지의 어떠한 Feature에 주목하여 판단하고 있는지 분석 수행
 
 ---
-<<<<<<< HEAD
 ### 2-2. 벨트 착용 여부: Belt(`b0`) / Unbelt(`b1`)
 > Update Date('21.10/26)  
 - 학습 결과 아래와 같이 Belt/Unbelt를 구분
@@ -112,14 +78,6 @@ Data/
 - Pipeline 코드는 [passenger_classifier_belt](./passenger_classifier_belt.ipynb)을 참고
 - `Weak`, `OOP`, `Mask` Task와 달리 `Belt` 모델은 input 이미지의 사이즈를 `128x128`로 하였다. 
 - 벨트는 승객의 의상과 비슷한 색깔일 때도, 옷에 가려 잘 보이지 않는 경우가 많아, input 이미지를 `64x64`로 할 경우 학습이 잘 되지 않았다.
-=======
-
-### 2-2. 벨트 착용 여부: Belt(`b0`) / Unbelt(`b1`)
-> Update Date('21.10/21)  
-- 학습 결과 아래와 같이 Belt/Unbelt를 구분
- ![image](./utils/samples_png/belt_classifier_sample.png)  
-- Pipeline 코드는 [ipynb파일](./passenger_classifier.ipynb)을 참고
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
 - 결과 설명
     1. Testset을 Dataset에서 추출해서 Fix 구성하고, 나머지 Dataset에서 Train, Validation Split 하여 학습, 튜닝 진행
@@ -138,7 +96,6 @@ Data/
     ```
     6. 최종적으로 `Train/Val/Test` 데이터 구성은 아래와 같다.
     ```bash
-<<<<<<< HEAD
     Train: (6577, 128, 128, 3)
     Val: (1645, 128, 128, 3)
     Test: (387, 128, 128, 3)
@@ -160,63 +117,6 @@ Data/
     ![belt_traing_curv2](./utils/samples_png/belt_training_curv2.png)  
 
     9. **Test Set의 Accuracy 100%**
-=======
-    Train: (5258, 120, 120, 3)
-    Val: (1315, 120, 120, 3)
-    Test: (387, 120, 120, 3)
-    ```
-    7. 구성한 CNN 모델은 아래와 같다.  [model_cnn.py](./model/model_cnn.py)  
-    
-    ```bash
-    Model: "model"
-    _________________________________________________________________
-    Layer (type)                 Output Shape              Param #   
-    =================================================================
-    input_1 (InputLayer)         [(None, 120, 120, 3)]     0         
-    _________________________________________________________________
-    1st_conv (Conv2D)            (None, 120, 120, 64)      4864      
-    _________________________________________________________________
-    re_lu (ReLU)                 (None, 120, 120, 64)      0         
-    _________________________________________________________________
-    max_pooling2d (MaxPooling2D) (None, 60, 60, 64)        0         
-    _________________________________________________________________
-    2nd_conv (Conv2D)            (None, 60, 60, 128)       204928    
-    _________________________________________________________________
-    re_lu_1 (ReLU)               (None, 60, 60, 128)       0         
-    _________________________________________________________________
-    max_pooling2d_1 (MaxPooling2 (None, 30, 30, 128)       0         
-    _________________________________________________________________
-    3rd_conv (Conv2D)            (None, 30, 30, 256)       819456    
-    _________________________________________________________________
-    re_lu_2 (ReLU)               (None, 30, 30, 256)       0         
-    _________________________________________________________________
-    max_pooling2d_2 (MaxPooling2 (None, 15, 15, 256)       0         
-    _________________________________________________________________
-    dropout (Dropout)            (None, 15, 15, 256)       0         
-    _________________________________________________________________
-    flatten (Flatten)            (None, 57600)             0         
-    _________________________________________________________________
-    fc1 (Dense)                  (None, 128)               7372928   
-    _________________________________________________________________
-    dropout_1 (Dropout)          (None, 128)               0         
-    _________________________________________________________________
-    out_belt (Dense)             (None, 2)                 258       
-    =================================================================
-    Total params: 8,402,434
-    Trainable params: 8,402,434
-    Non-trainable params: 0
-    ```
-
-    8. 학습 결과 (Total Epochs=10)은 아래와 같다.
-    ```bash
-    (@Epoch= 10) 5258/5258 [==============================] - 322s 61ms/sample - loss: 0.0543 - acc: 0.9757 - true_positives: 5124.0000 - true_negatives: 5136.0000 - auc: 0.9860 - val_loss: 0.1142 - val_acc: 0.9620 - val_true_positives: 1262.0000 - val_true_negatives: 1268.0000 - val_auc: 0.9729
-    ```
-    - **Validation acc: 96.2%** , **Validation auc: 97.29%**  
-    ![belt_traing_curv1](./utils/samples_png/belt_traing_curv1.png)  
-    ![belt_traing_curv2](./utils/samples_png/belt_traing_curv2.png)  
-
-    9. **Test Set의 Accuracy 94.57%** 가 나왔다. 이 때의 **Thd=0.8** 이다.  
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
     10. xAI로 살펴본 기계 학습 모델이 주목하고 있는 Feature 분석
         - 벨트 판단 `(머리 뒤쪽의 공간에 집중하고 있다)`    
@@ -228,7 +128,6 @@ Data/
 
 ### 2-3. 취약승객: Man(`s0`), Woman(`s1`)  
 
-<<<<<<< HEAD
 > Update Date('21.10/26)  
 1. 취약승객의 데이터로 남자/여자 데이터만을 활용할 수 있는 상황이어서, 노약자와 영유아에 대한 데이터 없이 학습을 진행하였다.
 - Pipeline 코드는 [passenger_classifier_weak](./passenger_classifier_belt.ipynb)을 참고
@@ -248,21 +147,10 @@ Epoch 00004: val_acc did not improve from 0.99784
 ```
 ![weak_traing_curv1](./utils/samples_png/weak_training_curv1.png)  
 ![weak_traing_curv2](./utils/samples_png/weak_training_curv2.png)  
-=======
-> Update Date('21.10/24)  
-1. 취약승객의 데이터로 남자/여자 데이터만을 활용할 수 있는 상황이어서, 노약자와 영유아에 대한 데이터 없이 학습을 진행하였다.
-
-2. 직접 취득한 데이터를 기준으로 Train/Validation, Test 구성하여 학습 진행
-
-3. **Validation Accuracy: 98.98% , Test Accuracy: 100%**
-    ![weak_traing_curv1](./utils/samples_png/weak_training_curv1.png)  
-    ![weak_traing_curv2](./utils/samples_png/weak_training_curv2.png)  
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
 4. 학습 결과  
     ![weak_classifier_sample](./utils/samples_png/weak_classifier_sample.png)
 
-<<<<<<< HEAD
 5. xAI로 살펴본 결과 (모든 이미지에 대해서 명확한것은 아니었다)
     - 남자/여자 데이터의 차의 실내 센터페시아를 보고 잡는 것으로 보이는 xAI 이미지가 있었음
 
@@ -275,18 +163,6 @@ Epoch 00004: val_acc did not improve from 0.99784
 ### 2-4. OOP (특이 착좌 조건)
 
 > Update Date('21.10/26): 낮게 나온 Test Accuracy 이슈  
-=======
-5. xAI로 살펴본 결과(모든 이미지에 대해서 명확한것은 아니었다)
-    - 남자/여자 데이터의 차의 실내 센터페시아를 보고 잡는 것으로 보이는 xAI 이미지가 있었음
-
-    - 남자판단 `얼굴을 잡는다`  
-    ![image](./utils/samples_png/xai_man_sample.png)
-    - 여자 판단 `얼굴을 잡는듯 하다`  
-    ![image](./utils/samples_png/xai_woman_sample.png)
-
-
-### 2-4. OOP (특이 착좌 조건)
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
 - 착좌 특이조건(OOP): Far(`c5`) / Close(`c6`) / Behind(`c7`) / Phone(`c1`) / Normal(`c0`)
 
@@ -296,7 +172,6 @@ Epoch 00004: val_acc did not improve from 0.99784
 - 당연히, 왼쪽으로 뒤를 보는 자세에선 얼굴이 안보이기 때문에 마스크도 보이지 않는다..
 - 따라서 뒤보는 자세의 데이터는 다른 TASK의 학습데이터 들어가지 않게끔 처리가 필요하다.
 
-<<<<<<< HEAD
 > Update Date('21.10/26)  
 
 1. Pipeline 코드는 [passenger_classifier_oop](./passenger_classifier_oop.ipynb)를 참고 
@@ -331,13 +206,10 @@ Epoch 7/10
 - Phone:  ![xai_phone_sample](./utils/samples_png/xai_phone_sample.png)
 - Look Behind:  ![xai_behind_sample](./utils/samples_png/xai_behind_sample.png)
 
-=======
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 ---
 
 ### 2-5. 마스크 착용 여부: Mask(`m0`) / Nomask(`m1`)
 
-<<<<<<< HEAD
 > Update Date('21.10/26)  
 1. 승객의 마스크 여부도 판단해보면 좋을 것 같아 구성한 서비스 Task이다.
 
@@ -363,20 +235,6 @@ Test: (387, 64, 64, 3)
     ![image](./utils/samples_png/xai_nomask_sample.png)
 
 ---
-=======
-> Update Date('21.10/24)  
-1. 승객의 마스크 여부도 판단해보면 좋을 것 같아 구성한 서비스 Task이다.
-
-2. 직접 취득한 데이터를 기준으로 Train/Validation, Test 구성하여 학습 진행
-
-3. Validation Accuracy: , Test Accuracy:
-    ![mask_traing_curv1](./utils/samples_png/belt_traing_curv1.png)  
-    ![mask_traing_curv2](./utils/samples_png/belt_traing_curv2.png)  
-
-4. 
-
-
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
 ## 3. Conclusion
 
