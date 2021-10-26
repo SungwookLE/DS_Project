@@ -8,11 +8,7 @@ from tensorflow.keras.models import Model, Sequential
 #                           ,close(c5), far(c6), behind(c7)
 #3. (모델3: 벨트/미벨트) 벨트(b0), 노벨트(b1)
 
-<<<<<<< HEAD
 def model_cnn(input_shape = (128, 128, 3), classifier = None, base_trainable = True):
-=======
-def model_cnn(input_shape = (120, 160, 3), classifier = None, base_trainable = True):
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
     inputs = Input(shape=input_shape)
     #base_conv = base_conv_net(input_shape=input_shape, base_trainable= base_trainable)(inputs)
@@ -39,7 +35,6 @@ def model_cnn(input_shape = (120, 160, 3), classifier = None, base_trainable = T
     dropout = Dropout(0.5)(fc1)
     
     # 멀티 아웃풋 헤드
-<<<<<<< HEAD
     if (classifier=="Belt"):
         out_belt= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_belt')(dropout)
         entire_model = Model(inputs=inputs, outputs=out_belt, name='belt_classifier')
@@ -55,29 +50,6 @@ def model_cnn(input_shape = (120, 160, 3), classifier = None, base_trainable = T
     elif (classifier=="Mask"):
         out_mask= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_mask')(dropout)
         entire_model = Model(inputs=inputs, outputs=out_mask, name='mask_classifier')
-=======
-    
-
-    if (classifier=="Belt"):
-        out_belt= Dense(2, activation='sigmoid', kernel_initializer='he_normal', name='out_belt')(dropout)
-        entire_model = Model(inputs=inputs, outputs=out_belt)
-
-    elif (classifier=="Weak"):
-        out_weak= Dense(2, activation='sigmoid', kernel_initializer='he_normal', name='out_week')(dropout)
-        entire_model = Model(inputs=inputs, outputs=out_weak)
-    
-    elif (classifier=="OOP"):
-        out_oop= Dense(5, kernel_initializer='he_normal', name='out_oop', activation='softmax')(dropout)
-        entire_model = Model(inputs=inputs, outputs=out_oop)
-
-    elif (classifier=="Mask"):
-        out_mask= Dense(2, activation='sigmoid', kernel_initializer='he_normal', name='out_mask')(dropout)
-        entire_model = Model(inputs=inputs, outputs=out_mask)
-    
-    else:
-        out_belt= Dense(2, activation='sigmoid', kernel_initializer='he_normal', name='out_belt')(dropout)
-        entire_model = Model(inputs=inputs, outputs=out_belt)
->>>>>>> bd39c2de29960e4ce9ae688fdb4e8717f3c80088
 
     return entire_model
 
