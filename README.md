@@ -48,7 +48,8 @@ Data/ (not commited)
     2. 착좌 특이조건(OOP): Far(`c5`) / Close(`c6`) / Behind(`c7`) / Phone(`c1`) / Normal(`c0`)
     3. 벨트 착용 여부: Belt(`b0`) / Unbelt(`b1`)
     4. 마스크 착용 여부: Mask(`m0`) / Nomask(`m1`)
-- Target Performance: `AUC` > **0.93**
+- Target Performance: `AUC` > **0.93**  
+- OOP Classifier Video Demo  
 ![OOP_Classifier_demo](./viz/samples_gif/realtime_demo1.gif)
 
 ## 2. MAIN
