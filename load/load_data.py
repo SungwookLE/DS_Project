@@ -1,10 +1,11 @@
 from subprocess import check_output
 import pandas as pd
-
+import numpy as np
 import cv2
 import os
 from tqdm import tqdm
 import re
+import random
 
 #1. (모델1: 취약승객) - 내가 만들어야 함 man(s0), woman pseudo(s1) labeling 을 CNN으로 학습시켜서 붙일 수 있을 것 같음
 #2. (모델2: OOP + phoning**) 기존 오픈데이터셋의 라벨링 활용 가능 safe driving(c0), reaching behind(c7)
@@ -14,6 +15,59 @@ import re
 #4. (모델4: 마스크 / 노마스크): 서비스 게임 - 내가 만들어야 함 (오픈 데이터셋 은 전부 다 노마스크), 마스크(m0), 노마스크(m1)
 
 class load_opendata:
+
+    def pseudo_label_marking(self, imgs, file_names, pseudo_labels, classifier_label=None):
+
+    #     for idx, labels in enumerate(X_open_pred):
+    # pseudo_label = np.argmax(labels)
+    # for key, val in oop_dict.items():
+    #    if val == pseudo_label:
+        print("This if OOP pseudo marker...")
+        print("if green is right enter {}, if not enter other keys.".format(str('q')))
+        test_data  = pd.read_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/test.csv')
+        if (classifier_label == "OOP"):
+            this_dict = {'c6': 0, 'c5': 1, 'c7': 2, 'c1': 3, 'c0': 4} ######################
+            this_dict2 = {'c5': 'close', 'c0': 'center', 'c6': 'far', 'c1': 'phone', 'c7': 'behind'}
+
+            with tqdm(total=len(pseudo_labels), desc='Pseudo Labeler') as pbar:
+                for img, file_name, pseudo_label in zip(imgs, file_names, pseudo_labels):
+                    
+                    for idx, it in enumerate(test_data['Filename']):
+                        if ( it == file_name):
+                            for key, val in this_dict.items():
+                                if val == np.argmax(pseudo_label):
+                                    img = cv2.resize(img, dsize=(480, 480), interpolation=cv2.INTER_AREA)
+
+                                    cv2.putText(img, this_dict2[key], (100,100), cv2.FONT_HERSHEY_SIMPLEX,1, (0,128,0), 3)
+                                    cv2.imshow(str(idx), img)
+                                    k = cv2.waitKey()
+                                    if (k == ord('q')):
+                                        cv2.putText(img, key, (200,200), cv2.FONT_HERSHEY_SIMPLEX,1, (128,0,0), 3)
+                                        test_data.loc[idx, 'ClassName'] = key
+                                        cv2.imshow(str(idx), img)
+
+                                        cv2.waitKey(100)
+                                        cv2.destroyAllWindows()
+
+                                    else:
+                                        cv2.putText(img, "pass", (200,200), cv2.FONT_HERSHEY_SIMPLEX,1, (128,0,0), 3)
+                                        test_data.loc[idx, 'ClassName'] = "test"
+                                        cv2.imshow(str(idx), img)
+
+                                        cv2.waitKey(100)
+                                        cv2.destroyAllWindows()
+
+                            pbar.update(1)
+                            break        
+                        
+            test_data.to_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/test.csv')        
+
+        else:
+            pass
+
+        return
+
+
     def load_data(self, classifier_label=None, dsize=(160,120), comp_ratio = 1):
             
         train_data = pd.read_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/train.csv')
@@ -24,7 +78,7 @@ class load_opendata:
             test_X = list()
             test_Y=list()
 
-            with tqdm(total=len(test_data), desc='Test_data withoud Label') as pbar:
+            with tqdm(total=len(test_data), desc='Test_data without Label') as pbar:
                 for idx, it in enumerate(test_data['ClassName']):
 
                     if ( idx%comp_ratio == 0):
@@ -34,6 +88,7 @@ class load_opendata:
                         img = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
 
                         test_X.append(img)
+                        test_Y.append(test_data.loc[idx, 'Filename'])
                     pbar.update(1)
             
             return test_X, test_Y
@@ -57,16 +112,21 @@ class load_opendata:
                             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                             img = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
 
-                            train_X.append(img)
-
-
-                            if (it == 'c2' or it == 'c4'):
-                                train_Y.append('c1')
-                            elif (it == 'c3'):
-                                train_Y.append('c1')
-                            else:
+                            if (it != 'c1' and it != 'c2' and it != 'c3' and it != 'c4'):
+                                train_X.append(img)
                                 train_Y.append(it)
 
+
+                            else:
+                                if (random.random() > 0.75):
+                                    train_X.append(img)
+                                    if (it == 'c2' or it == 'c4'):
+                                        train_Y.append('c1')
+                                    elif (it == 'c3'):
+                                        train_Y.append('c1')
+                                    else:
+                                        train_Y.append(it)
+                                
                     pbar.update(1)
 
             return train_X, train_Y
@@ -198,12 +258,13 @@ class load_mydata:
                         for idx, img_name in enumerate(os.listdir(path)):
                             if ( idx%comp_ratio == 0):
 
-                                img = cv2.imread(os.path.join(path,img_name))
-                                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                                img = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
+                                if (random.random() > 0.85):
+                                    img = cv2.imread(os.path.join(path,img_name))
+                                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                                    img = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
 
-                                train_X.append(img)
-                                train_Y.append('c0')
+                                    train_X.append(img)
+                                    train_Y.append('c0')
                             pbar.update(1)
                     
                     elif (c1.search(folder)):
@@ -408,13 +469,14 @@ class load_mydata:
                     if (c0.search(folder)):
                         for idx, img_name in enumerate(os.listdir(path)):
                             if ( idx%comp_ratio == 0):
+                                if (random.random() > 0.5):
 
-                                img = cv2.imread(os.path.join(path,img_name))
-                                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-                                img = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
+                                    img = cv2.imread(os.path.join(path,img_name))
+                                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                                    img = cv2.resize(img, dsize=dsize, interpolation=cv2.INTER_AREA)
 
-                                train_X.append(img)
-                                train_Y.append('c0')
+                                    train_X.append(img)
+                                    train_Y.append('c0')
                             pbar.update(1)
                     
                     elif (c1.search(folder)):

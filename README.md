@@ -161,39 +161,45 @@ Epoch 00004: val_acc did not improve from 0.99784
 ---
 
 ### 2-4. OOP (특이 착좌 조건)
-
-> Update Date('21.10/26): 낮게 나온 Test Accuracy 이슈  
-
 - 착좌 특이조건(OOP): Far(`c5`) / Close(`c6`) / Behind(`c7`) / Phone(`c1`) / Normal(`c0`)
 
-> Update Date('21.10/24): Not completed  
+> Update Date('21.10/24): done[v]  
 - 뒤돌아보는 자세 `Behind`에 대한 데이터를 취득하는 것이 다소 까다롭다.
 - 또한, 다른 TASK에 학습데이터로 사용할 때 좌측으로 뒤보기 자세는 제외를 시켜주어야 하는데, 이유는 OOP TASK만을 학습할 땐 문제될 것은 없으나, 마스크 착용 여부 등의 TASK에서는 왼쪽으로 뒤보는 데이터가 들어갈 경우 학습이 이상하게 되는 포인트가 발견되었다.
 - 당연히, 왼쪽으로 뒤를 보는 자세에선 얼굴이 안보이기 때문에 마스크도 보이지 않는다..
 - 따라서 뒤보는 자세의 데이터는 다른 TASK의 학습데이터 들어가지 않게끔 처리가 필요하다.
 
-> Update Date('21.10/26)  
+> Update Date('21.10/26): done[v]  
+- 낮게 나온 Test Accuracy 이슈 있었음
+- Train, Val acc는 높으나, Test acc가 낮은 것은 새로운 데이터에 대한 예측 결과가 좋지 않았기 때문이었다.
+- 즉, Train/Val의 data distribution이 좋지 않아 오버피팅 되었다.
+
+> Update Date('21.10/27): done[v]  
+- 테스트 셋을 추가로 구성하고(opendata set 활용) 이를 위해 [pseudo_oop_labeler.py](./utils/pseudo_oop_labeler.py)를 작성하였음
+- 역할: 이미지를 1차적으로 학습 모델로 추론한 뒤, 결과값을 보여주고 유저(사람)가 해당 라벨이 맞는지 안 맞는지 입력하여 이미지 데이터의 라벨을 반자동화하여 붙일 수 있게 해줌
+- Test Acc를 올리기 위해 Train/Val Set의 Class Inbalance 문제를 해소함
+- 결과: 성능 개선 됨 (Test acc: 82 -> 97%)  
 
 1. Pipeline 코드는 [passenger_classifier_oop](./passenger_classifier_oop.ipynb)를 참고 
 2. OOP 조건에 대한 데이터 구성
 ```bash
-Train (14880, 64, 64, 3)
-Val (3720, 64, 64, 3)
-Test (654, 64, 64, 3)
+Train (2504, 64, 64, 3)
+Val (627, 64, 64, 3)
+Test (355, 64, 64, 3)
 ```
 ![oop_class_data_distribution](./utils/samples_png/oop_class_data_distribution.png)
-- class label의 inbalance 문제가 있다.
 
 
-3. 학습 결과 **validation accuracy: 98.15%, validation auc: 99.01%**
+
+3. 학습 결과 **validation accuracy: 93.15%, validation auc: 95.71%**
 ```bash
-Epoch 7/10
-14880/14880 [==============================] - 248s 17ms/sample - loss: 0.0260 - acc: 0.9912 - true_positives: 14741.0000 - true_negatives: 59405.0000 - auc: 0.9952 - val_loss: 0.0601 - val_acc: 0.9815 - val_true_positives: 3650.0000 - val_true_negatives: 14813.0000 - val_auc: 0.990
+Epoch 10/10
+2504/2504 [==============================] - 51s 20ms/sample - loss: 0.1516 - acc: 0.9509 - true_positives: 2358.0000 - true_negatives: 9915.0000 - auc: 0.9696 - val_loss: 0.2153 - val_acc: 0.9250 - val_true_positives: 576.0000 - val_true_negatives: 2467.0000 - val_auc: 0.9571
 ```
 ![oop_training_curv1](./utils/samples_png/oop_training_curv1.png)
 ![oop_training_curv2](./utils/samples_png/oop_training_curv2.png)
-![oop_classifer_sample](./utils/samples_png/oop_classifer_sample.png)
-4. 테스트 케이스로 평가한 결과 **Test accuracy: 82.86%** 수준으로 validation acc에 비해 낮은 값이 나왔다. 
+![oop_classifer_sample](./utils/samples_png/oop_classifier_sample.png)
+4. 테스트 케이스로 평가한 결과 **Test accuracy:  97.46478873239437%%** 
 
 5. 테스트셋에 있는 `behind` 라벨 데이터는 train데이터에는 없었던 데이터이다.(다른 배우)
 6. `behind`의 다른 데이터를 넣어주니까 대부분 제대로 예측하고 있지 않다.

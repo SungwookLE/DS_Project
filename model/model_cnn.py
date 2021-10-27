@@ -52,25 +52,3 @@ def model_cnn(input_shape = (128, 128, 3), classifier = None, base_trainable = T
         entire_model = Model(inputs=inputs, outputs=out_mask, name='mask_classifier')
 
     return entire_model
-
-
-def base_conv_net(input_shape=(120,160,3), base_trainable = True):
-
-    inputs = Input(shape=input_shape)
-
-    conv1 = Conv2D(kernel_size=(5,5), strides=(1,1), filters=32, padding='same', kernel_initializer='he_normal', name='1st_conv')(inputs)
-    conv1 = BatchNormalization()(conv1)
-    conv1 = ReLU()(conv1)
-    conv1 = Dropout(0.5)(conv1)
-    pool1 = MaxPool2D(pool_size=(2,2), strides=(2,2), padding='valid')(conv1)
-
-    conv2 = Conv2D(kernel_size=(5,5), strides=(1,1), filters=48, padding='same', kernel_initializer='he_normal', name='2nd_conv')(pool1)
-    conv2 = BatchNormalization()(conv2)
-    conv2 = ReLU()(conv2)
-    conv2 = Dropout(0.5)(conv2)
-    pool2 = MaxPool2D(pool_size=(2,2), strides=(2,2), padding='valid')(conv2)
-    
-    conv_net = Model(inputs = inputs, outputs = pool2)
-    conv_net.trainable= base_trainable
-
-    return conv_net

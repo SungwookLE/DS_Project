@@ -74,4 +74,4 @@ to_path = '/home/joker1251/Desktop/owen/DataAnalysis_Science/DS_Master_21/Data/s
 
 f = file_processing(from_path=from_path ,to_path = to_path)
 f.find_file_path_lv3()
-f.file_move(leng=1500)
+f.file_move(leng=2000)

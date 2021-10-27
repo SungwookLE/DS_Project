@@ -23,8 +23,7 @@ class explainable_model:
     def __init__(self, model):
         self.model_load = model
         self.model_load.layers[-1].activation = None
-        print(self.model_load.summary())
-
+        #print(self.model_load.summary())
 
     def explainable_model(self, img, last_conv_layer_name, alpha=0.4):
         self.last_conv_layer_name =last_conv_layer_name
