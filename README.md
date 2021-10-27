@@ -49,6 +49,7 @@ Data/ (not commited)
     3. 벨트 착용 여부: Belt(`b0`) / Unbelt(`b1`)
     4. 마스크 착용 여부: Mask(`m0`) / Nomask(`m1`)
 - Target Performance: `AUC` > **0.93**
+![OOP_Classifier_demo](./viz/samples_gif/realtime_demo1.gif)
 
 ## 2. MAIN
 - 본 프로젝트의 분류 모델은 **4개의** main tasks를 가지고 있다. `WEAK/OOP/BELT/MASK`
@@ -69,6 +70,15 @@ Data/ (not commited)
 - [xai_viz.py](./utils/xai_viz.py)  
     - 역할: Conv Layer의 Node들의 출력값을 Heatmap으로 표현하고, Input Image에 Overay 시킴으로써, 모델이 어떤 픽셀에 집중하고 있는지 시각적으로 설명하기 위함  
     - 아래의 분류 모델에 xAI 분석을 통해 주어진 input 이미지의 어떠한 Feature에 주목하여 판단하고 있는지 분석 수행
+
+### 2-2. real-time demo (for embedding)
+- 실시간 데모를 위해 코드를 작성하였다. [run_demo.py](./run_demo.py)
+- 역할: 이미지 폴더 또는 비디오 웹캠 아이디를 넘겨주면, 실시간 작동하여 visualize 해준다.
+
+```bash
+ python run_demo.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
+ python run_demo.py --model_name 'model_oop_cnn' --video 0
+```
 
 ---
 ### 2-2. 벨트 착용 여부: Belt(`b0`) / Unbelt(`b1`)
