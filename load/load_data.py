@@ -40,6 +40,7 @@ class load_opendata:
 
                                     cv2.putText(img, this_dict2[key], (100,100), cv2.FONT_HERSHEY_SIMPLEX,1, (0,128,0), 3)
                                     cv2.imshow(str(idx), img)
+                                    
                                     k = cv2.waitKey()
                                     if (k == ord('q')):
                                         cv2.putText(img, key, (200,200), cv2.FONT_HERSHEY_SIMPLEX,1, (128,0,0), 3)

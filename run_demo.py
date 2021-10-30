@@ -18,3 +18,7 @@ if __name__ == '__main__':
     args = get_parse_args()
     net, frame_provider = demo_init(args)
     run_demo(net, frame_provider)
+
+    # python run_demo.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
+    # python run_demo.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211015_*_unbelt_nomask_sungwook*/Color/*.jpg
+    # python run_demo.py --model_name 'model_oop_cnn' --video 0     

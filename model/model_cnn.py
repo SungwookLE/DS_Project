@@ -1,13 +1,6 @@
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, ReLU, BatchNormalization, MaxPool2D, Dropout, Input, Softmax
 from tensorflow.keras.models import Model, Sequential
 
-
-#1. (모델1: 취약승객) man(s0), woman (s1) 
-#2. (모델2: OOP + phoning**)  safe driving(c0), 
-#                           ,phoning(c1) 휴대폰,
-#                           ,close(c5), far(c6), behind(c7)
-#3. (모델3: 벨트/미벨트) 벨트(b0), 노벨트(b1)
-
 def model_cnn(input_shape = (128, 128, 3), classifier = None, base_trainable = True):
 
     inputs = Input(shape=input_shape)
