@@ -79,7 +79,7 @@ class load_opendata:
             test_X = list()
             test_Y=list()
 
-            with tqdm(total=len(test_data), desc='Test_data without Label') as pbar:
+            with tqdm(total=len(test_data), desc='Test opendata without Label') as pbar:
                 for idx, it in enumerate(test_data['ClassName']):
 
                     if ( idx%comp_ratio == 0):
@@ -103,7 +103,7 @@ class load_opendata:
             train_X=list()
             train_Y=list()
 
-            with tqdm(total=len(train_data), desc='Train_data with Label(OOP)') as pbar:
+            with tqdm(total=len(train_data), desc='Train opendata with Label(OOP)') as pbar:
                 for idx, it in enumerate(train_data['ClassName']):
                     if ( idx%comp_ratio == 0):
 
@@ -137,7 +137,7 @@ class load_opendata:
             train_X=list()
             train_Y=list()
 
-            with tqdm(total=len(train_data), desc='Train_data with Label(Belt)') as pbar:
+            with tqdm(total=len(train_data), desc='Train opendata with Label(Belt)') as pbar:
                 for idx, it in enumerate(train_data['ClassName']):
                     if ( idx%comp_ratio == 0):
                         
@@ -156,7 +156,7 @@ class load_opendata:
             train_X=list()
             train_Y=list()
 
-            with tqdm(total=len(train_data), desc='Train_data Loading with Label(Mask)') as pbar:
+            with tqdm(total=len(train_data), desc='Train opendata Loading with Label(Mask)') as pbar:
                 for idx, it in enumerate(train_data['ClassName']):
                     if ( idx%comp_ratio == 0):
                         
@@ -178,15 +178,17 @@ class load_opendata:
 
 
 class load_mydata:
-    def load_data(self, classifier_label=None, dsize=(160,120), comp_ratio = 1):
-        print("My data folder lists are..")
-        print(check_output(['ls', '../Data/safety_class_dataset']).decode('utf8'))
+    def load_data(self, classifier_label=None, dsize=(160,120), comp_ratio = 1, verbose=1):
+
+        if verbose == 1:
+            print("My Train folder lists are..")
+            print(check_output(['ls', '../Data/safety_class_dataset']).decode('utf8'))
 
         if (classifier_label == None):
             test_X=list()
             test_Y=list()
 
-            with tqdm(desc='My data Loading without Label') as pbar:
+            with tqdm(desc='Train data Loading without Label') as pbar:
 
                 for folder in os.listdir('../Data/safety_class_dataset'):
                     path = os.path.join('../Data/safety_class_dataset/', folder, 'Color/')
@@ -211,7 +213,7 @@ class load_mydata:
             s0 = re.compile('sungwook|minseok|yukhyun')
             s1 = re.compile('jieun|juwon|sujin')
 
-            with tqdm(desc='My data Loading with Weak') as pbar:
+            with tqdm(desc='Train data Loading with Weak') as pbar:
                 for folder in os.listdir('../Data/safety_class_dataset'):
                     path = os.path.join('../Data/safety_class_dataset/', folder, 'Color/')
                     
@@ -251,7 +253,7 @@ class load_mydata:
             c7 = re.compile('behind')
 
 
-            with tqdm(desc='My data Loading with OOP') as pbar:
+            with tqdm(desc='Train data Loading with OOP') as pbar:
                 for folder in os.listdir('../Data/safety_class_dataset'):
                     path = os.path.join('../Data/safety_class_dataset/', folder, 'Color/')
                     
@@ -321,7 +323,7 @@ class load_mydata:
             b0 = re.compile('_belt')
             b1 = re.compile('_unbelt')
 
-            with tqdm(desc='My data Loading with Belt') as pbar:
+            with tqdm(desc='Train data Loading with Belt') as pbar:
                 for folder in os.listdir('../Data/safety_class_dataset'):
                     path = os.path.join('../Data/safety_class_dataset/', folder, 'Color/')
                     
@@ -356,7 +358,7 @@ class load_mydata:
             m0 = re.compile('_mask')
             m1 = re.compile('_nomask')
 
-            with tqdm(desc='My data Loading with Mask') as pbar:
+            with tqdm(desc='Train data Loading with Mask') as pbar:
                 for folder in os.listdir('../Data/safety_class_dataset'):
                     path = os.path.join('../Data/safety_class_dataset/', folder, 'Color/')
                     
@@ -390,9 +392,11 @@ class load_mydata:
         return 
 
 
-    def load_test_data(self, classifier_label=None, dsize=(160,120), comp_ratio = 1):
-        print("Test data folder lists are..")
-        print(check_output(['ls', '../Data/safety_class_testset']).decode('utf8'))
+    def load_test_data(self, classifier_label=None, dsize=(160,120), comp_ratio = 1, verbose=1):
+
+        if verbose == 1:
+            print("My Test data folder lists are..")
+            print(check_output(['ls', '../Data/safety_class_testset']).decode('utf8'))
 
         if (classifier_label == None):
             test_X=list()

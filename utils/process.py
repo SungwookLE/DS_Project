@@ -1,3 +1,4 @@
+from re import L
 import numpy as np
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
@@ -9,8 +10,8 @@ import matplotlib.pyplot as plt
 def preprocess(array, shape):
     """
     Normalizes the supplied array and reshpaed it into the appropriate format.
-    """
-
+    """ 
+    array= np.array(array)
     array = array.astype("float32") / 255.0
     array = np.reshape(array, (len(array), shape[0],shape[1],shape[2]))
     return array
@@ -78,7 +79,7 @@ def tsne_plot(x1, labels_as_one_column, fig_title=None):
     plt.figure(figsize=(12, 8))
     plt.scatter(X_t[:, 0], X_t[:, 1], s= 5, c=labels_as_one_column, cmap='Spectral')
     plt.gca().set_aspect('equal', 'datalim')
-    plt.colorbar(boundaries=np.arange(11)-0.5).set_ticks(np.arange(10))
+    plt.colorbar()
     
     plt.legend(loc='best')
     plt.title(fig_title)
@@ -112,3 +113,54 @@ def display_pair(array1, array2, label=None):
 
     plt.show()
     print(array1.shape, array2.shape)
+
+def shuffler(X,Y=None):
+    
+    if Y is not None:
+        # Shuffled Image
+        temp_pool = list(zip(X,Y))
+        random.shuffle(temp_pool)
+        X, Y = zip(*temp_pool)
+        return np.array(X), np.array(Y)
+
+    else:
+        random.shuffle(X)
+        return X
+
+def label_dict_static(classifier):
+    if classifier == "OOP":
+        ## center(c0), behind(c7), phoning(c1), close(c5), far(c6)
+        label_map={'c6': 0, 'c5': 1, 'c7': 2, 'c1': 3, 'c0': 4}
+        label_str={'c6': "Far", 'c5': "Close", 'c7': "Behind", 'c1': "Phone", 'c0': "Center"}
+    
+    elif classifier == "Belt":
+        #벨트(b0: 0), 노벨트(b1: 1)
+        label_map = {'b0': 0, 'b1': 1}
+        label_str={'b0': "Belt", 'b1':"Unbelt"}
+
+    elif classifier == "Mask":
+        #(m0: 마스크, 0), (m1: 노마스크, 1)
+        label_map = {'m0': 0, 'm1': 1}
+        label_str={'m0': "Mask", 'm1':"Nomask"}
+
+    elif classifier == "Weak":
+        #남자(s0: 0), 여자(s1: 1)
+        label_map = {'s0': 0, 's1': 1}
+        label_str={'s0': "Man", 's1':"Woman"}
+
+    return label_map, label_str 
+
+def score(preds, labels):
+    ret=0
+    for pred, label in zip(preds, labels):
+
+        pred_idx = np.argmax(pred)
+        label_idx = np.argmax(label)
+
+        if (pred_idx == label_idx):
+            ret+=1
+
+    ret = ret / len(preds)
+    print("Test Predict is: {}%".format(ret*100))
+
+    return ret
