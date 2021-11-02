@@ -16,6 +16,8 @@ def model_autoencoder(input_shape = (64, 64, 3)):
 
     latent = MaxPool2D(pool_size=(2,2), strides=(2,2), padding='valid', name='enc_3rd_maxpool')(conv3)
 
+    
+
     #Decoder
     dec = Conv2DTranspose(kernel_size=(5,5), strides=(2,2), filters= 256, padding = 'same', kernel_initializer='he_normal', name='dec_3rd_conv', activation='relu')(latent)
     dec = Conv2DTranspose(kernel_size=(5,5), strides=(2,2), filters= 128, padding = 'same', kernel_initializer='he_normal', name='dec_2nd_conv', activation='relu')(dec)
@@ -26,3 +28,36 @@ def model_autoencoder(input_shape = (64, 64, 3)):
     entire_model = Model(inputs= inputs, outputs = out)
     return entire_model
 
+def model_classifier_with_encoder(encoder, input_shape=(64,64,3), train_classifier=None):
+
+    encoder.trainable= False
+
+    inputs = Input(shape=input_shape, name='input_layer')
+    feature = encoder(inputs)
+
+    conv_fin = Conv2D(kernel_size=(5,5), strides=(1,1), filters=256, padding='same', kernel_initializer='he_normal', name='adhesive_conv')(feature)
+    conv_fin = ReLU(name='adhesive_relu')(conv_fin)
+    pool_fin = MaxPool2D(pool_size=(2,2), strides=(2,2), padding='valid', name='adhesive_maxpool')(conv_fin)
+
+    dropout = Dropout(0.5)(pool_fin)
+    flat = Flatten()(dropout)
+    
+    # 멀티 아웃풋 헤드
+    fc1 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc1')(flat)
+    dropout1 = Dropout(0.5)(fc1)
+    out_oop= Dense(5, activation='softmax', kernel_initializer='he_normal', name='out_oop')(dropout1)
+
+
+    fc2 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc2')(flat)
+    dropout2 = Dropout(0.5)(fc2)
+    out_weak= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_weak')(dropout2)
+
+    fc3 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc3')(flat)
+    dropout3 = Dropout(0.5)(fc3)
+    out_mask= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_mask')(dropout3)
+
+    entire_model = Model(inputs=inputs, outputs=[out_oop, out_weak, out_mask], name='multi')
+
+    return entire_model
+
+    

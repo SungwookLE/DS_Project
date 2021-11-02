@@ -25,7 +25,7 @@ class explainable_model:
         self.model_load.layers[-1].activation = None
         #print(self.model_load.summary())
 
-    def explainable_model(self, img, last_conv_layer_name, alpha=0.4):
+    def explainable_model(self, img, last_conv_layer_name, alpha=0.4, output_node = None):
         self.last_conv_layer_name =last_conv_layer_name
 
         '''
@@ -40,7 +40,7 @@ class explainable_model:
         img_array = np.expand_dims(array, axis=0)
        
         # Generate class activation heatmap
-        heatmap = self.make_gradcam_heatmap(img_array, self.model_load, self.last_conv_layer_name)
+        heatmap = self.make_gradcam_heatmap(img_array, self.model_load, self.last_conv_layer_name, output_node=output_node)
         superimposed_img = self.save_and_display_gradcam(img*255.0, heatmap, alpha=alpha)
 
         fig , (ax1, ax2) = plt.subplots(1,2, figsize=(10,5))
@@ -59,12 +59,18 @@ class explainable_model:
         array = np.expand_dims(array, axis=0)
         return array
 
-    def make_gradcam_heatmap(self, img_array, model, last_conv_layer_name, pred_index=None):
+    def make_gradcam_heatmap(self, img_array, model, last_conv_layer_name, pred_index=None, output_node = None):
         # First, we create a model that maps the input image to the activations
         # of the last conv layer as well as the output predictions
-        grad_model = tf.keras.models.Model(
-            [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
-        )
+
+        if output_node is None:
+            grad_model = tf.keras.models.Model(
+                [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
+            )
+        else:
+            grad_model = tf.keras.models.Model(
+                [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output[output_node]]
+            )
 
         # Then, we compute the gradient of the top predicted class for our input image
         # with respect to the activations of the last conv layer

@@ -17,11 +17,6 @@ import random
 class load_opendata:
 
     def pseudo_label_marking(self, imgs, file_names, pseudo_labels, classifier_label=None):
-
-    #     for idx, labels in enumerate(X_open_pred):
-    # pseudo_label = np.argmax(labels)
-    # for key, val in oop_dict.items():
-    #    if val == pseudo_label:
         print("This if OOP pseudo marker...")
         print("if green is right enter {}, if not enter other keys.".format(str('q')))
         test_data  = pd.read_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/test.csv')
@@ -62,23 +57,17 @@ class load_opendata:
                             break        
                         
             test_data.to_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/test.csv')        
-
         else:
             pass
 
         return
 
-
     def load_data(self, classifier_label=None, dsize=(160,120), comp_ratio = 1):
-            
         train_data = pd.read_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/train.csv')
-
         if (classifier_label == None):
-
             test_data  = pd.read_csv('../Data/open_dataset/distracted_driver_from_sideview/csv_files/test.csv') 
             test_X = list()
             test_Y=list()
-
             with tqdm(total=len(test_data), desc='Test opendata without Label') as pbar:
                 for idx, it in enumerate(test_data['ClassName']):
 
@@ -91,15 +80,12 @@ class load_opendata:
                         test_X.append(img)
                         test_Y.append(test_data.loc[idx, 'Filename'])
                     pbar.update(1)
-            
             return test_X, test_Y
 
         elif (classifier_label == "Weak"):
             pass #Pseudo Labeling을 위한 모델을 넣어서 라벨을 생성해서 내보내던지
 
-
         elif (classifier_label == "OOP"):
-            
             train_X=list()
             train_Y=list()
 

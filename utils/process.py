@@ -89,8 +89,11 @@ def display_pair(array1, array2, label=None):
     """
     Displays ten random images from each one of the supplied arrays.
     """
-
     n = 10
+
+    # array1= np.clip(array1, 0.0, 1.0)
+    # array2= np.clip(array2, 0.0, 1.0)
+
 
     indices = np.random.randint(len(array1), size = n)
     images1 = array1[indices, :]
@@ -102,17 +105,47 @@ def display_pair(array1, array2, label=None):
     plt.figure(figsize=(20,4))
     for i, (image1, image2) in enumerate(zip(images1, images2)):
         ax = plt.subplot(2, n , i+1)
-        plt.imshow(image1)
+       
+        plt.imshow(np.asarray(image1*255, dtype=int))
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
         ax = plt.subplot(2,n, i+1+n)
-        plt.imshow(image2)
+        plt.imshow(np.asarray(image2*255, dtype=int))
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
     plt.show()
     print(array1.shape, array2.shape)
+
+def display_row(array1, label=None, label_map=None, label_str=None):
+    """
+    Displays ten random images from each one of the supplied arrays.
+    """
+    n = 10
+
+    # array1= np.clip(array1, 0.0, 1.0)
+    # array2= np.clip(array2, 0.0, 1.0)
+
+
+    indices = np.random.randint(len(array1), size = n)
+    images1 = array1[indices, :]
+
+    plt.figure(figsize=(15,4))
+    for i, (image1) in enumerate((images1)):
+        ax = plt.subplot(1, n , i+1)
+       
+        plt.imshow(np.asarray(image1*255, dtype=int))
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+
+        for key, val in label_map.items():
+            if ( val ==np.argmax(label[indices[i]]) ):
+                ax.set_title(label_str[key])
+
+    plt.show()
+    print(array1.shape)
+
 
 def shuffler(X,Y=None):
     
@@ -150,6 +183,29 @@ def label_dict_static(classifier):
 
     return label_map, label_str 
 
+def visualize_results(history):
+    # Plot the accuracy and loss curves
+    acc = history.history['acc']
+    val_acc = history.history['val_acc']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    epochs = range(len(acc))
+
+    plt.plot(epochs, acc, 'b', label='Training acc')
+    plt.plot(epochs, val_acc, 'r', label='Validation acc')
+    plt.title('Training and validation accuracy')
+    plt.legend()
+
+    plt.figure()
+
+    plt.plot(epochs, loss, 'b', label='Training loss')
+    plt.plot(epochs, val_loss, 'r', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.legend()
+
+    plt.show()
+
 def score(preds, labels):
     ret=0
     for pred, label in zip(preds, labels):
@@ -164,3 +220,34 @@ def score(preds, labels):
     print("Test Predict is: {}%".format(ret*100))
 
     return ret
+
+def matching_plot(x, pred, label, ax, label_map, label_str, thd=0.5):
+    box1 = {'boxstyle': 'round',
+        'ec': (0.0, 0.0, 0.0),
+        'fc': (1.0, 1.0, 1.0)}
+
+    pick = random.randint(0, len(x)-1)
+    ax.imshow(x[pick])
+
+    pred_idx = np.argmax(pred[pick])
+    label_idx = np.argmax(label[pick])
+
+    if pred[pick][pred_idx] > thd:
+        p = 1
+    else:
+        p = 0
+
+    if (label_idx == pred_idx):
+        if (p == 1):
+            ax.set_title("Predicted with high confidence as {:.2f}".format((pred[pick][pred_idx])))
+        elif (p ==0):
+            ax.set_title("Predicted with low  confidence as {:.2f}".format((pred[pick][pred_idx])))
+
+
+        for key, val in label_map.items():
+            if (pred_idx == val):
+                tit = label_str[key]
+                ax.text(10,10, tit, bbox=box1, fontsize=15)
+    else:
+        ax.set_title("Wrong Predicted")    
+        ax.text(10,10,"Fail", bbox=box1, fontsize=15)    
