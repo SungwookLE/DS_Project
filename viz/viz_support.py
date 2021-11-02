@@ -8,6 +8,7 @@ import os
 from tensorflow import keras
 import matplotlib.cm as cm
 import tensorflow as tf
+from utils.process import label_dict_static
 
 
 
@@ -55,7 +56,9 @@ class VideoReader(object):
         return img
 
 def demo_init(args):
-    net = args.model_name
+    net_multi = args.model_multi
+    net_belt = args.model_belt
+
 
     frame_provider = ImageReader(args.images)
     if args.video != '':
@@ -64,15 +67,21 @@ def demo_init(args):
     else:
         image_flag = True
 
-    return net, frame_provider
+    return [net_multi, net_belt], frame_provider
 
 
-def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
+def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None, output_node=None):
         # First, we create a model that maps the input image to the activations
         # of the last conv layer as well as the output predictions
-        grad_model = tf.keras.models.Model(
-            [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
-        )
+
+        if output_node is None:
+            grad_model = tf.keras.models.Model(
+                [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
+            )
+        else:
+            grad_model = tf.keras.models.Model(
+                [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output[output_node]]
+            )
 
         # Then, we compute the gradient of the top predicted class for our input image
         # with respect to the activations of the last conv layer
@@ -129,41 +138,76 @@ def display_gradcam(img, heatmap, alpha=0.4):
         return superimposed_img
 
 
-def explainable(model, img, last_conv_layer_name, alpha =0.4):
+def explainable(model, img, last_conv_layer_name, alpha =0.4, output_node=None):
     array = keras.preprocessing.image.img_to_array(img)
     img_array = np.expand_dims(array, axis=0)
 
     # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name)
+    heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name, output_node=output_node)
     superimposed_img = display_gradcam(img*255.0, heatmap, alpha=alpha)
 
     return superimposed_img
 
 
 def run_demo(net, frame_provider):
-    this_dict = {'c6': 0, 'c5': 1, 'c7': 2, 'c1': 3, 'c0': 4} ######################
-    this_dict2 = {'c5': 'close', 'c0': 'center', 'c6': 'far', 'c1': 'phone', 'c7': 'behind'}
+    out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'MP4V') , 20.0, (480,320))
 
-    model_load = load_model("./ckpt/"+net)
+    label_map_oop, label_str_oop = label_dict_static(classifier="OOP")
+    label_map_weak, label_str_weak = label_dict_static(classifier="Weak")
+    label_map_mask, label_str_mask = label_dict_static(classifier="Mask")
+    label_map_belt, label_str_belt = label_dict_static(classifier="Belt")
+
+
+    model_load_multi = load_model("./ckpt/"+net[0])
+    model_load_belt = load_model("./ckpt/"+net[1])
+
     for img in frame_provider:
+        img_belt= cv2.resize(img, dsize=(128,128), interpolation=cv2.INTER_AREA)
         img = cv2.resize(img, dsize=(64,64), interpolation=cv2.INTER_AREA)
         orig_img = img.copy()
         img = img/255.0
-        pred= model_load.predict(img.reshape(1, img.shape[0], img.shape[1], img.shape[2]))
-        
-        print("Pred label: ", (np.argmax(pred)))
+        pred= model_load_multi.predict(img.reshape(1, img.shape[0], img.shape[1], img.shape[2]))
 
-        for key, val in this_dict.items():
-            if val == (np.argmax(pred)):
-                img1 = cv2.resize(orig_img, dsize=(320, 320), interpolation=cv2.INTER_AREA)
-                cv2.putText(img1, this_dict2[key], (100,100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,128,0), 2)
-        
-        img2 = explainable(model_load, img, "3rd_maxpool", alpha=0.4)
-        img2 = cv2.resize(img2, dsize=(320, 320), interpolation=cv2.INTER_AREA)
+        img_belt  = img_belt/255.0
+        pred_belt =  model_load_belt.predict(img_belt.reshape(1, img_belt.shape[0], img_belt.shape[1], img_belt.shape[2]))
 
-        img_list = [img1, img2]
-        img_v = cv2.hconcat(img_list)
-        cv2.imshow("OOP Classifier", img_v)
+        print("Pred label(OOP/Weak/Mask/Belt): ", (np.argmax(pred[0]),np.argmax(pred[1]),np.argmax(pred[2]), np.argmax(pred_belt)))
+        img1 = cv2.resize(orig_img, dsize=(320, 320), interpolation=cv2.INTER_AREA)
+
+        for key, val in label_map_oop.items():
+            if val == (np.argmax(pred[0])):
+                cv2.putText(img1, label_str_oop[key]+": "+str(np.max(pred[0])), (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,128,0), 2)
+        
+        for key, val in label_map_weak.items():
+            if val == (np.argmax(pred[1])):
+                cv2.putText(img1, label_str_weak[key]+": "+str(np.max(pred[1])), (10,60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (128,0,0), 2)
+        
+        for key, val in label_map_mask.items():
+            if val == (np.argmax(pred[2])):
+                cv2.putText(img1, label_str_mask[key]+": "+str(np.max(pred[2])), (10,90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,128), 2)
+
+        for key, val in label_map_belt.items():
+            if val == (np.argmax(pred_belt)):
+                cv2.putText(img1, label_str_belt[key]+": "+str(np.max(pred_belt)), (10,120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200,200,200), 2)
+
+        img2 = explainable(model_load_multi, img, "dropout_8", alpha=0.4, output_node=0)
+        img2 = cv2.resize(img2, dsize=(160, 160), interpolation=cv2.INTER_AREA)
+        cv2.putText(img2, "xAI(OOP/Weak/Mask)", (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,0,0), 1)
+
+
+        img3= explainable(model_load_belt, img_belt, "3rd_maxpool", alpha=0.4)
+        img3 = cv2.resize(img3, dsize=(160, 160), interpolation=cv2.INTER_AREA)
+        cv2.putText(img3, "xAI(Belt)", (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0,0,0), 1)
+
+        img_list_v = [img2, img3]
+        img_v = cv2.vconcat(img_list_v)
+
+        img_list_h = [img1, img_v]
+        img_h = cv2.hconcat(img_list_h)
+        cv2.imshow("Multi Classifier", img_h)
+        out.write(img_h)
+
+
         key = cv2.waitKey(1)
 
         if key == 27:  # esc
@@ -173,7 +217,4 @@ def run_demo(net, frame_provider):
                 delay = 0
             else:
                 delay = 1
-
-    # python run_demo.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
-    # python run_demo.py --model_name 'model_oop_cnn' --video 0    
     return

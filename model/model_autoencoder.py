@@ -35,29 +35,55 @@ def model_classifier_with_encoder(encoder, input_shape=(64,64,3), train_classifi
     inputs = Input(shape=input_shape, name='input_layer')
     feature = encoder(inputs)
 
-    conv_fin = Conv2D(kernel_size=(5,5), strides=(1,1), filters=256, padding='same', kernel_initializer='he_normal', name='adhesive_conv')(feature)
-    conv_fin = ReLU(name='adhesive_relu')(conv_fin)
-    pool_fin = MaxPool2D(pool_size=(2,2), strides=(2,2), padding='valid', name='adhesive_maxpool')(conv_fin)
+    # conv_fin = Conv2D(kernel_size=(5,5), strides=(1,1), filters=256, padding='same', kernel_initializer='he_normal', name='adhesive_conv')(feature)
+    # conv_fin = ReLU(name='adhesive_relu')(conv_fin)
+    # pool_fin = MaxPool2D(pool_size=(2,2), strides=(2,2), padding='valid', name='adhesive_maxpool')(conv_fin)
 
-    dropout = Dropout(0.5)(pool_fin)
+    dropout = Dropout(0.5)(feature)
     flat = Flatten()(dropout)
     
     # 멀티 아웃풋 헤드
-    fc1 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc1')(flat)
-    dropout1 = Dropout(0.5)(fc1)
-    out_oop= Dense(5, activation='softmax', kernel_initializer='he_normal', name='out_oop')(dropout1)
+    if (train_classifier=="OOP"):
+        fc1 = Dense(256, activation='relu', kernel_initializer='he_normal', name='fc1')(flat)
+        dropout1 = Dropout(0.5)(fc1)
+        out_oop= Dense(5, activation='softmax', kernel_initializer='he_normal', name='out_oop')(dropout1)
+        entire_model = Model(inputs=inputs, outputs=out_oop, name='enc_oop')
 
+    elif (train_classifier=="Weak"):
+        fc2 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc2')(flat)
+        dropout2 = Dropout(0.5)(fc2)
+        out_weak= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_weak')(dropout2)
+        entire_model = Model(inputs=inputs, outputs=out_weak, name='enc_weak')
 
-    fc2 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc2')(flat)
-    dropout2 = Dropout(0.5)(fc2)
-    out_weak= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_weak')(dropout2)
-
-    fc3 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc3')(flat)
-    dropout3 = Dropout(0.5)(fc3)
-    out_mask= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_mask')(dropout3)
-
-    entire_model = Model(inputs=inputs, outputs=[out_oop, out_weak, out_mask], name='multi')
+    elif (train_classifier=="Mask"):
+        fc3 = Dense(128, activation='relu', kernel_initializer='he_normal', name='fc3')(flat)
+        dropout3 = Dropout(0.5)(fc3)
+        out_mask= Dense(2, activation='softmax', kernel_initializer='he_normal', name='out_mask')(dropout3)
+        entire_model = Model(inputs=inputs, outputs=out_mask, name='enc_mask')
 
     return entire_model
 
+
+def multihead_classifier_with_encoder(encoder, oop, weak, mask, input_shape=(64,64,3)):
+
+    '''
+    Final Model, fin
+    '''
+    encoder.trainable= False
+    oop.trainable= False
+    weak.trainable= False
+    mask.trainable= False
+
+    inputs = Input(shape=input_shape, name='input_layer')
+    feature = encoder(inputs)
+
+    dropout = Dropout(0.5)(feature)
+    flat = Flatten()(dropout)
     
+    # 멀티 아웃풋 헤드
+    out_oop = oop(flat)
+    out_weak= weak(flat)
+    out_mask= mask(flat)
+    entire_model = Model(inputs=inputs, outputs=[out_oop, out_weak, out_mask], name='final_multi')
+
+    return entire_model

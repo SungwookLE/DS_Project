@@ -22,3 +22,8 @@ if __name__ == '__main__':
     # python run_demo.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
     # python run_demo.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211015_*_unbelt_nomask_sungwook*/Color/*.jpg
     # python run_demo.py --model_name 'model_oop_cnn' --video 0     
+    # python run_demo.py --model_name 'model_encoder_multihead' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
+    # python run_demo.py --model_name 'model_encoder_multihead' --images ../Data/safety_class_dataset/*_nomask_juwon*/Color/*.jpg
+
+
+    # python run_demo.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_nomask_juwon*/Color/*.jpg
