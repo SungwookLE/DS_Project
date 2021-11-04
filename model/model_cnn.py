@@ -1,7 +1,7 @@
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, ReLU, BatchNormalization, MaxPool2D, Dropout, Input, Softmax
 from tensorflow.keras.models import Model, Sequential
 
-def model_cnn(input_shape = (128, 128, 3), classifier = None, base_trainable = True):
+def model_cnn(input_shape = (128, 128, 3), classifier = None):
 
     inputs = Input(shape=input_shape)
     #base_conv = base_conv_net(input_shape=input_shape, base_trainable= base_trainable)(inputs)
