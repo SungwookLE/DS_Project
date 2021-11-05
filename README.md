@@ -98,7 +98,7 @@ Data/ (not commited)
 - 4개의 TASK를 판단하는 모델은 아래와 같은 구조로 구성되었다.  
 ![model_figure](./utils/samples_png/model_figure.png)   
 - Encoder는 AutoEncoder에서 Encoder 파트만 분리하여 가져온 것으로, 실내 승객 이미지가 가지고 있는 general한 정보를 추출하는 역할을 한다.  
-![auto-encoder](./utils/samples_png/autoencoder_ssl.png)    
+![auto-encoder](./utils/samples_png/autoencoder_ssl.png)      
 - 자기 자신의 이미지가 입력되어 출력으로 자신의 이미지를 사용하기 때문에 오토인코더는 라벨링이 필요없는 비지도 학습이다. 그렇다 보니 Symetric한 구조의 가운데의 feature는 hidden feature라 부르며, 이미지에서 제일 핵심이 되는 압축 정보를 가지고 있다.
 - safety testset은 직접 취득한 dataset pool에서 랜덤하게 균등 추출한 것으로 [extract_testset.py](./utils/extract_testset.py) 코드 이용하여 추출함
 
@@ -333,12 +333,11 @@ Test: (524, 64, 64, 3)
     ![weak_traing_curv2](./utils/samples_png/weak_training_curv2.png)  
     2. predict 결과 샘플
     ![weak_classifier_sample](./utils/samples_png/weak_classifier_sample.png)
-    3. xAI로 살펴본 결과 (모든 이미지에 대해서 사람이 보기에 명확한것은 아니었다)
-        - 남자판단 `얼굴을 잡는 듯 하다.`  
-        ![image](./utils/samples_png/xai_man_sample.png)
-        - 여자 판단  
-        ![image](./utils/samples_png/xai_woman_sample.png) 
-
+    3. xAI로 살펴본 결과 (모든 이미지에 대해서 사람이 보기에 명확한것은 아니었다)  
+        - 남자판단: `얼굴을 잡는 듯 하다.`   
+        ![image](./utils/samples_png/xai_man_sample.png)  
+        - 여자 판단   
+        ![image](./utils/samples_png/xai_woman_sample.png)   
 
 ### 3-5. Mask Classifier with Encoder
 - 승객의 마스크 여부도 판단해보면 좋을 것 같아 구성한 서비스 Task이다.
