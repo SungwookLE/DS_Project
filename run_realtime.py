@@ -19,11 +19,12 @@ if __name__ == '__main__':
     net, frame_provider = demo_init(args)
     run_demo(net, frame_provider)
 
-    # python run_realtime.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
-    # python run_realtime.py --model_name 'model_oop_cnn' --images ../Data/safety_class_dataset/20211015_*_unbelt_nomask_sungwook*/Color/*.jpg
-    # python run_realtime.py --model_name 'model_oop_cnn' --video 0     
-    # python run_realtime.py --model_name 'model_encoder_multihead' --images ../Data/safety_class_dataset/20211025_*_unbelt_nomask_jieun/Color/*.jpg
-    # python run_realtime.py --model_name 'model_encoder_multihead' --images ../Data/safety_class_dataset/*_nomask_juwon*/Color/*.jpg
+    
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_nomask_juwon2/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*close*_sungwook*/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*close*_*_jieun1/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_belt*_minseok1/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_unbelt*_nomask_yukhyun1/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*phone_unbelt_nomask_sujin1/Color/*.jpg
 
-    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_nomask_juwon1/Color/*.jpg
-    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_nomask_juwon*/Color/*.jpg
+    

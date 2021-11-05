@@ -163,8 +163,8 @@ def run_demo(net, frame_provider):
 
     for img in frame_provider:
         img_belt= cv2.resize(img, dsize=(128,128), interpolation=cv2.INTER_AREA)
-        img = cv2.resize(img, dsize=(64,64), interpolation=cv2.INTER_AREA)
         orig_img = img.copy()
+        img = cv2.resize(img, dsize=(64,64), interpolation=cv2.INTER_AREA)
         img = img/255.0
         pred= model_load_multi.predict(img.reshape(1, img.shape[0], img.shape[1], img.shape[2]))
 
