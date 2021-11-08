@@ -24,8 +24,8 @@ if __name__ == '__main__':
     # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*close*_sungwook*/Color/*.jpg
     # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*close*_*_jieun1/Color/*.jpg
     # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_belt*_minseok1/Color/*.jpg
-    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*_unbelt*_nomask_yukhyun1/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/20211017_center_belt_nomask_yukhyun1/Color/*.jpg
     # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/*phone_unbelt_nomask_sujin1/Color/*.jpg
 
-    #python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/20211017_center_unbelt_mask_sungwook1/Color/*.jpg
+    # python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --images ../Data/safety_class_dataset/20211017_center_unbelt_mask_sungwook1/Color/*.jpg
     
