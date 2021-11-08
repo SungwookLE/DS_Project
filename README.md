@@ -88,8 +88,8 @@ Data/ (not commited)
         - xAI(Explainable AI) 분석 방법 적용함
 
 - 최종적으로 구현한 Classifier 모델 Realtime 데모  
-[![Classifier_demo](./viz/samples_gif/realtime_demo_sungwook.gif)](./viz/samples_gif/realtime_demo_juwon.mp4)
-`python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --video 0`
+[![Classifier_demo](./viz/samples_gif/realtime_demo_sungwook.gif)](./viz/samples_gif/realtime_demo_juwon.mp4)  
+- 실행 명령어: `python run_realtime.py --model_multi 'model_encoder_multihead' --model_belt 'model_belt_cnn' --video 0`
 - 최종적으로 학습 완료된 모델
     1. EncoderConv_MultiOut_oop_weak_mask: `./ckpt/model_encoder_multihead`
     2. SimpleConv_SingleOut_belt: `./ckpt/model_belt_cnn`

@@ -176,19 +176,23 @@ def run_demo(net, frame_provider):
 
         for key, val in label_map_oop.items():
             if val == (np.argmax(pred[0])):
-                cv2.putText(img1, label_str_oop[key]+": "+str(np.max(pred[0])), (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,128,0), 2)
+                prob = np.exp(np.max(pred[0])) / np.sum(np.exp(pred[0]))
+                cv2.putText(img1, label_str_oop[key]+": "+str(prob), (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,128,0), 2)
         
         for key, val in label_map_weak.items():
             if val == (np.argmax(pred[1])):
-                cv2.putText(img1, label_str_weak[key]+": "+str(np.max(pred[1])), (10,60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (128,0,0), 2)
+                prob = np.exp(np.max(pred[1])) / np.sum(np.exp(pred[1]))
+                cv2.putText(img1, label_str_weak[key]+": "+str(prob), (10,60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (128,0,0), 2)
         
         for key, val in label_map_mask.items():
             if val == (np.argmax(pred[2])):
-                cv2.putText(img1, label_str_mask[key]+": "+str(np.max(pred[2])), (10,90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,128), 2)
+                prob = np.exp(np.max(pred[2])) / np.sum(np.exp(pred[2]))
+                cv2.putText(img1, label_str_mask[key]+": "+str(prob), (10,90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,128), 2)
 
         for key, val in label_map_belt.items():
             if val == (np.argmax(pred_belt)):
-                cv2.putText(img1, label_str_belt[key]+": "+str(np.max(pred_belt)), (10,120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200,200,200), 2)
+                prob = np.exp(np.max(pred_belt)) / np.sum(np.exp(pred_belt))
+                cv2.putText(img1, label_str_belt[key]+": "+str(prob), (10,120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (200,200,200), 2)
 
         img2 = explainable(model_load_multi, img, "dropout_8", alpha=0.4, output_node=0)
         img2 = cv2.resize(img2, dsize=(160, 160), interpolation=cv2.INTER_AREA)
